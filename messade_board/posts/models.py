@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from ckeditor.fields import RichTextField
+
 
 class Author(models.Model):
     author_user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -37,12 +39,14 @@ class Category(models.Model):
 
 class Post(models.Model):
     post_header = models.TextField()
-    post_text = models.TextField()
+    post_text = RichTextField()
     post_user = models.ForeignKey(Author, on_delete=models.CASCADE)
     post_category = models.OneToOneField(Category, on_delete=models.CASCADE)
+    post_creation_time = models.DateTimeField(auto_now_add=True)
 
 
 class Response(models.Model):
     response_text = models.TextField()
     response_author = models.ForeignKey(Author, on_delete=models.CASCADE)
     response_post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    response_creation_time = models.DateTimeField(auto_now_add=True)
