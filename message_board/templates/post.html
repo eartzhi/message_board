@@ -1,4 +1,3 @@
-<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
 
 
@@ -8,12 +7,31 @@
 
 {% block content %}
 {{ form.media }}
-{{ form.as_p }}
-<h2><span>{{post.post_header }}</span></h2>
+{{post.post_header }}
 <hr>
-<h1>{{ post.post_text|safe }}</h1>
+{{ post.post_text|safe }}
 <hr>
-<small><p> {{ post.post_author }} </p>
+<small><p> {{ post.post_author.nickname }} </p>
+    <p>{{ post.get_post_category_display }}</p>
  ({{ post.post_creation_time }})</small>
 
 {% endblock content %}
+
+{% block extra_body %}
+
+<h2> <font color="white"> Отклики:  </font></h2>
+     {% if user.is_authenticated %}
+      <form action="" method="POST" id="main_form" class="comment_form">
+         <div>
+             <label="white" for="response">Введите текст отклика </label>
+            {{ response_form.response_text }} {% csrf_token %} <input type="submit" value="Post">
+         </div>
+      </form>
+      {% else %} <h4>Чтобы, оставлять отклики вам нужно зарегистрироваться</h4>
+      {% endif %}
+
+      {% for response in responses %}
+         <h2> <font color="white"><b>{{ response.response_author.nickname }} : </b> {{ response.response_text }}</font></h2>
+      {% endfor %}
+
+{% endblock extra_body %}
