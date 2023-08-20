@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
-from ckeditor.fields import RichTextField
+from froala_editor.fields import FroalaField
 
 
 class Author(models.Model):
@@ -9,7 +10,7 @@ class Author(models.Model):
     nickname = models.CharField(max_length=255, null=False)
 
 
-class Category(models.Model):
+class Post(models.Model):
     TANK = 'TN'
     HEAL = 'HL'
     DD = 'DD'
@@ -33,20 +34,18 @@ class Category(models.Model):
         (POTIONS_MASTER, 'Зельевар'),
         (SPELL_MASTER, 'Мастер заклинаний'),
     ]
-
-    category_name = models.CharField(max_length=2, choices=CATEGORY_CHOICE)
-
-
-class Post(models.Model):
     post_header = models.TextField()
-    post_text = RichTextField()
-    post_user = models.ForeignKey(Author, on_delete=models.CASCADE)
-    post_category = models.OneToOneField(Category, on_delete=models.CASCADE)
+    post_text = FroalaField()
+    post_author = models.ForeignKey(User, on_delete=models.CASCADE)
+    post_category = models.CharField(max_length=2, choices=CATEGORY_CHOICE)
     post_creation_time = models.DateTimeField(auto_now_add=True)
+
+    def get_absolute_url(self):
+        return reverse('post', args=[str(self.id)])
 
 
 class Response(models.Model):
     response_text = models.TextField()
-    response_author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    response_author = models.ForeignKey(User, on_delete=models.CASCADE)
     response_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     response_creation_time = models.DateTimeField(auto_now_add=True)

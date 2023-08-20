@@ -1,0 +1,17 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+
+{% block title %}
+{{post.header }}
+{% endblock title %}
+
+{% block content %}
+{{ form.media }}
+{{ form.as_p }}
+<h1>{{post.post_header }}</h1>
+{{ post.post_text|safe }}
+<small><p> {{ post.post_author }} </p>
+ ({{ post.post_creation_time }})</small>
+
+{% endblock content %}

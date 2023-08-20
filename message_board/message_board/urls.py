@@ -1,5 +1,5 @@
 """
-URL configuration for messade_board project.
+URL configuration for message_board project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -19,5 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('pages/', include('django.contrib.flatpages.urls')),
+    path('posts/', include('posts.urls')),
+    path('froala_editor/',include('froala_editor.urls')),
 ]
