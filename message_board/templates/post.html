@@ -9,8 +9,10 @@
 {% block content %}
 {{ form.media }}
 {{ form.as_p }}
-<h1>{{post.post_header }}</h1>
-{{ post.post_text|safe }}
+<h2><span>{{post.post_header }}</span></h2>
+<hr>
+<h1>{{ post.post_text|safe }}</h1>
+<hr>
 <small><p> {{ post.post_author }} </p>
  ({{ post.post_creation_time }})</small>
 

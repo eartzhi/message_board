@@ -12,12 +12,12 @@
         <div class="container">
 
          <div class="d-flex  justify-content-center">
-          <h5 class="what_text">What we do</h5>
          </div>
           <div class="d-flex  justify-content-center">
-            <h1 class="services_text custom_main">Our Expertize & Services</h1>
+            <h1 class="services_text custom_main">Объявления:</h1>
           </div>
         </div>
+          <hr>
       </div>
    {% if posts %}
        <table>
@@ -34,7 +34,8 @@
                <td>{{ post.post_header }}</td>
                <td>{{ post.post_creation_time }}</td>
                <td>{{ post.post_text|safe }}</td>
-               <td>{{ post.post_author }}</td>
+               <td>{{ post.post_author.nickname }}</td>
+               <td>{{ post.get_post_category_display }}</td>
            </tr>
            {% endfor %}
 
@@ -43,6 +44,10 @@
        <h2>Портал пуст</h2>
    {% endif %}
 
+{% endblock content %}
+
+
+{% block extra_body %}
    {% if page_obj.has_previous %}
        <a href="?page=1">1</a>
        {% if page_obj.previous_page_number != 1 %}
@@ -62,6 +67,4 @@
            <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
        {% endif %}
    {% endif %}
-
-
-{% endblock content %}
+{% endblock extra_body %}

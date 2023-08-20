@@ -4,12 +4,6 @@ from django.urls import reverse
 
 from froala_editor.fields import FroalaField
 
-
-class Author(models.Model):
-    author_user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nickname = models.CharField(max_length=255, null=False)
-
-
 class Post(models.Model):
     TANK = 'TN'
     HEAL = 'HL'
