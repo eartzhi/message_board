@@ -44,6 +44,26 @@ def response_create_notify(response_text, response_author, response_post, **kwar
 
 
 @shared_task
+def response_accepter(response_id, **kwargs):
+    response = Response.objects.get(id=response_id)
+
+    html_content = render_to_string(
+        'email_accept.html',
+        {
+            'text': response.response_text[:50],
+        }
+    )
+
+    send_email = response.response_author.email
+
+    if send_email is not None:
+        email_sender(subject='Новый отклик на ваше объявление',
+                         from_email=settings.DEFAULT_FROM_EMAIL,
+                         recipient_list=[send_email],
+                         html_content=html_content)
+
+
+@shared_task
 def weekly_notificator():
     period_end = timezone.now()
     period_start = period_end - datetime.timedelta(days=7)

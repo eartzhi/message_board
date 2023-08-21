@@ -11,7 +11,7 @@ import datetime
 
 from .forms import *
 from .filters import ResponseFilter
-from .tasks import response_create_notify
+from .tasks import response_create_notify, response_accepter
 
 
 class PostList(ListView):
@@ -117,6 +117,7 @@ def response_accept(request, pk):
     response = Response.objects.get(id=pk)
     response.response_accepted = True
     response.save()
+    response_accepter.apply_async([pk,], eta=timezone.now() + datetime.timedelta(seconds=10))
     return redirect('/posts/search')
 
 
