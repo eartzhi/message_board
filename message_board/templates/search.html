@@ -17,19 +17,26 @@
        <input type="submit" value="Найти" />
    </form>
 
-
    {% if responses %}
        <table>
            <tr>
                <td>Дата публикации</td>
                <td>Текст</td>
                <td>Автор</td>
+               <td>Статус</td>
+               <td> </td>
            </tr>
            {% for response in responses %}
            <tr>
                <td>{{ response.response_creation_time }}</td>
                <td>{{ response.response_text }}</td>
                <td>{{ response.response_author.nickname }}</td>
+               {% if response.response_accepted %}
+                   <td>Принято</td>
+                   {% else %}
+                   <td><a class="nav-link" href="/posts/response/{{ response.id }}/accept" > Принять </a></td>
+                   {% endif %}
+               <td><a class="nav-link" href="/posts/response/{{ response.id }}/delete" > Удалить </a></td>
            </tr>
            {% endfor %}
 
@@ -38,7 +45,9 @@
        <h2>Ничего не найдено</h2>
    {% endif %}
 
-
    <hr>
-   <h3>Найдено статей на портале: {{ responses.all.count }} </h3>
+   <h3>Найдено откликов на портале: {{ responses.all.count }} </h3>
 {% endblock content %}
+
+{% block extra_body %}
+{% endblock extra_body %}

@@ -43,3 +43,4 @@ class Response(models.Model):
     response_author = models.ForeignKey(User, on_delete=models.CASCADE)
     response_post = models.ForeignKey(Post, on_delete=models.CASCADE)
     response_creation_time = models.DateTimeField(auto_now_add=True)
+    response_accepted = models.BooleanField(default=False)

@@ -1,8 +1,11 @@
 from django.shortcuts import redirect
-from django.views.generic import ListView, CreateView, DetailView, UpdateView
+from django.views.generic import (ListView, CreateView, DetailView, UpdateView,
+                                  DeleteView)
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.utils.translation import gettext
+from django.urls import reverse_lazy
 
 from .forms import *
 from .filters import ResponseFilter
@@ -45,6 +48,23 @@ class PostEdit(LoginRequiredMixin, UpdateView):
             return super().form_valid(form)
 
 
+class PostDelete(DeleteView):
+    model = Post
+    template_name = 'delete_form.html'
+    success_url = reverse_lazy('posts')
+
+    def form_valid(self, form):
+        post = self.get_object()
+        if post.post_author != self.request.user:
+            return HttpResponseForbidden(
+                gettext(
+                "Только автор статьи может её удалить"
+                )
+            )
+        else:
+            return super().form_valid(form)
+
+
 class PostDetail(DetailView):
     model = Post
     template_name = 'post.html'
@@ -72,14 +92,14 @@ class PostDetail(DetailView):
         return redirect(self.request.path_info)
 
 
-class SearchResponse(ListView):
+class SearchResponse(LoginRequiredMixin, ListView):
     model = Response
     ordering = 'response_creation_time'
     template_name = 'search.html'
     context_object_name = 'responses'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().filter(response_post__in=Post.objects.filter(post_author=self.request.user).all())
         self.filterset = ResponseFilter(self.request.GET, queryset)
         return self.filterset.qs
 
@@ -87,3 +107,17 @@ class SearchResponse(ListView):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         return context
+
+
+@login_required
+def response_accept(request, pk):
+    response = Response.objects.get(id=pk)
+    response.response_accepted = True
+    response.save()
+    return redirect('/posts/search')
+
+
+@login_required
+def response_delete(request, pk):
+    Response.objects.get(id=pk).delete()
+    return redirect('/posts/search')

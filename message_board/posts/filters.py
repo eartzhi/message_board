@@ -1,13 +1,14 @@
 from django_filters import FilterSet, ModelChoiceFilter, DateTimeFilter, \
   DateFilter, CharFilter, ChoiceFilter
-from .models import Response
+from django.contrib.auth.models import User
 from django.forms import DateInput, DateTimeInput
 
+from .models import Response
 
 class ResponseFilter(FilterSet):
     response_author = ModelChoiceFilter(
         field_name='response_author',
-        queryset=Response.objects.all(),
+        queryset=User.objects.all(),
         label='Автор статьи',
         empty_label='любой',
     )
