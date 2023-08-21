@@ -22,7 +22,7 @@
 
 {% block extra_body %}
 
-<h2> <font color="white"> Отклики:  </font></h2>
+<h2>  Отклики:  </h2>
      {% if user.is_authenticated %}
       <form action="" method="POST" id="main_form" class="comment_form">
          <div>
@@ -34,7 +34,7 @@
       {% endif %}
 
       {% for response in responses %}
-         <h2> <font color="white"><b>{{ response.response_author.nickname }} : </b> {{ response.response_text }}</font></h2>
+         <h6> <b>{{ response.response_author.nickname }} : </b> {{ response.response_text }}</h6>
       {% endfor %}
 
 {% endblock extra_body %}

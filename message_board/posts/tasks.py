@@ -8,6 +8,7 @@ import datetime
 from celery import shared_task
 from .models import Response, Post
 
+
 def email_sender(subject, from_email, recipient_list, html_content):
     msg = EmailMultiAlternatives(
         subject=subject,
@@ -22,8 +23,8 @@ def email_sender(subject, from_email, recipient_list, html_content):
 @shared_task
 def response_create_notify(response_text, response_author, response_post, **kwargs):
     response = Response.objects.filter(response_text=response_text,
-                                       response_author=response_author).\
-                                       order_by('-creation_time').first()
+                                       response_author=User.objects.get(id=response_author)).\
+                                       order_by('-response_creation_time').first()
     html_content = render_to_string(
         'email_notification.html',
         {
@@ -32,15 +33,13 @@ def response_create_notify(response_text, response_author, response_post, **kwar
 
         }
     )
-    send_emails = []
-    post_author = response_post.post_author
-    send_emails += [post_author.email]
+    post_author = Post.objects.get(id=response_post).post_author
+    send_email = post_author.email
 
-    for email in set(send_emails):
-        if email is not None:
-            email_sender(subject='Новый отклик на ваше объявление',
+    if send_email is not None:
+        email_sender(subject='Новый отклик на ваше объявление',
                          from_email=settings.DEFAULT_FROM_EMAIL,
-                         recipient_list=[email],
+                         recipient_list=[send_email],
                          html_content=html_content)
 
 

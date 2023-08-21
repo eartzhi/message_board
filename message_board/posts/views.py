@@ -6,9 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.utils.translation import gettext
 from django.urls import reverse_lazy
+from django.utils import timezone
+import datetime
 
 from .forms import *
 from .filters import ResponseFilter
+from .tasks import response_create_notify
 
 
 class PostList(ListView):
@@ -83,12 +86,12 @@ class PostDetail(DetailView):
         response_form = ResponseForm(self.request.POST)
         if response_form.is_valid():
             response_text = response_form.cleaned_data['response_text']
-
-
         new_response = Response(response_text=response_text,
                                 response_author=self.request.user,
                                 response_post=self.get_object())
         new_response.save()
+        response_create_notify.apply_async([response_text, self.request.user.id, self.get_object().id],
+                                       eta=timezone.now() + datetime.timedelta(seconds=10))
         return redirect(self.request.path_info)
 
 
