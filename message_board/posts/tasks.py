@@ -23,8 +23,9 @@ def email_sender(subject, from_email, recipient_list, html_content):
 @shared_task
 def response_create_notify(response_text, response_author, response_post, **kwargs):
     response = Response.objects.filter(response_text=response_text,
-                                       response_author=User.objects.get(id=response_author)).\
-                                       order_by('-response_creation_time').first()
+                        response_author=User.objects.get(id=response_author)).\
+                        order_by('-response_creation_time').first()
+
     html_content = render_to_string(
         'email_notification.html',
         {

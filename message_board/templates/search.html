@@ -23,6 +23,7 @@
                <td>Дата публикации</td>
                <td>Текст</td>
                <td>Автор</td>
+               <td>На объявление</td>
                <td>Статус</td>
                <td> </td>
            </tr>
@@ -31,6 +32,7 @@
                <td>{{ response.response_creation_time }}</td>
                <td>{{ response.response_text }}</td>
                <td>{{ response.response_author.nickname }}</td>
+                <td>{{ response.response_post }}</td>
                {% if response.response_accepted %}
                    <td>Принято</td>
                    {% else %}

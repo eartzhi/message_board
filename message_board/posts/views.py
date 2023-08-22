@@ -75,7 +75,8 @@ class PostDetail(DetailView):
 
     def get_context_data(self , **kwargs):
         data = super().get_context_data(**kwargs)
-        connected_responses = Response.objects.filter(response_post=self.get_object())
+        connected_responses = (
+            Response.objects.filter(response_post=self.get_object()))
         number_of_responses = connected_responses.count()
         data['responses'] = connected_responses
         data['no_of_responses'] = number_of_responses
@@ -90,8 +91,15 @@ class PostDetail(DetailView):
                                 response_author=self.request.user,
                                 response_post=self.get_object())
         new_response.save()
-        response_create_notify.apply_async([response_text, self.request.user.id, self.get_object().id],
-                                       eta=timezone.now() + datetime.timedelta(seconds=10))
+        (response_create_notify.apply_async(
+            [
+                response_text,
+                self.request.user.id,
+                self.get_object().id
+            ],
+            eta=timezone.now() + datetime.timedelta(seconds=10)
+                                           )
+        )
         return redirect(self.request.path_info)
 
 
@@ -102,7 +110,13 @@ class SearchResponse(LoginRequiredMixin, ListView):
     context_object_name = 'responses'
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(response_post__in=Post.objects.filter(post_author=self.request.user).all())
+        queryset = (super().get_queryset().filter
+            (
+            response_post__in=Post.objects.filter
+                (
+                post_author=self.request.user).all()
+                )
+            )
         self.filterset = ResponseFilter(self.request.GET, queryset)
         return self.filterset.qs
 
@@ -117,7 +131,8 @@ def response_accept(request, pk):
     response = Response.objects.get(id=pk)
     response.response_accepted = True
     response.save()
-    response_accepter.apply_async([pk,], eta=timezone.now() + datetime.timedelta(seconds=10))
+    response_accepter.apply_async([pk,],
+                            eta=timezone.now() + datetime.timedelta(seconds=10))
     return redirect('/posts/search')
 
 
