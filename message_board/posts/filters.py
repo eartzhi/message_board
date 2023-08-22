@@ -34,12 +34,12 @@ class ResponseFilter(FilterSet):
         lookup_expr='icontains',
     )
 
-    response_post = ModelChoiceFilter(
-        field_name='response_post',
-        queryset=Post.objects.all(),
-        label='Объявление',
-        empty_label='любое',
-    )
+    # response_post = ModelChoiceFilter(
+    #     field_name='response_post',
+    #     queryset=Post.objects.all(),
+    #     label='Объявление',
+    #     empty_label='любое',
+    # )
 
     class Meta:
         model = Response
