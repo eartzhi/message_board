@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from froala_editor.fields import FroalaField
 
+
 class Post(models.Model):
     TANK = 'TN'
     HEAL = 'HL'
